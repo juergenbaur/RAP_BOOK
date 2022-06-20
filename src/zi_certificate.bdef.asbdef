@@ -1,26 +1,59 @@
-managed implementation in class zbp_i_certificate unique;
-strict;
+managed;
+//strict;
+with draft;
 
-define behavior for ZI_Certificate //alias <alias_name>
-//persistent table <???>
+
+define behavior for ZI_Certificate alias Certificate
+implementation in class zbp_i_certificate unique
+persistent table zbca_certificate
+draft table zbcd_certificate
 lock master
-authorization master ( instance )
-//etag master <field_name>
+total etag LocalLastChangedAt
+authorization master ( global, instance )
+etag master LocalLastChangedAt
 {
   create;
   update;
   delete;
-  association _CertificateState { create; }
+  association _CertificateState { create; with draft; }
+  field ( numbering : managed, readonly ) CertUUID;
+  //  field ( readonly ) MaterialText;
+  field ( mandatory ) Material;
+  mapping for zbca_certificate
+  {
+    Material = matnr;
+    Version = version;
+    CertificationStatus = cert_status;
+    CertificateCe = cert_ce;
+    CertificateGs = cert_gs;
+    CertificateFcc = cert_fcc;
+    CertificateIso = cert_iso;
+    CertificateTuev = cert_tuev;
+    LocalLastChangedAt = local_last_changed_at;
+  }
 }
 
-define behavior for ZI_CertificateState //alias <alias_name>
-persistent table ZBCA_CERTI_STATE
+define behavior for ZI_CertificateState alias CertificateState
+persistent table zbca_certi_state
+draft table zbcd_certi_state
 lock dependent by _Certificate
+etag master LocalLastChangedAt
 authorization dependent by _Certificate
-//etag master <field_name>
 {
-  update;
   delete;
+  association _Certificate { with draft; }
+  field ( numbering : managed, readonly ) StateUUID;
   field ( readonly ) CertUUID;
-  association _Certificate;
+  mapping for zbca_certi_state
+  {
+    StateUUID = state_uuid;
+    CertUUID = cert_uuid;
+    Material = matnr;
+    Version = version;
+    Status = status;
+    StatusOld = status_old;
+    LastChangedBy = last_changed_by;
+    LastChangedAt = last_changed_at;
+    LocalLastChangedAt = local_last_changed_at;
+  }
 }

@@ -1,0 +1,19 @@
+projection;
+//strict; //Comment this line in to enable strict mode. The strict mode is prerequisite to be future proof regarding syntax and to be able to release your BO.
+use draft;
+
+define behavior for ZC_Certificate alias Certificate
+{
+  use create;
+  use update;
+  use delete;
+
+  use association _CertificateState { create; with draft; }
+}
+
+define behavior for ZC_CertificateState alias CertificateState
+{
+  use delete;
+
+  use association _Certificate { with draft; }
+}
