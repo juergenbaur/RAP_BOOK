@@ -1,0 +1,26 @@
+managed implementation in class zbp_i_certificate unique;
+strict;
+
+define behavior for ZI_Certificate //alias <alias_name>
+//persistent table <???>
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+  create;
+  update;
+  delete;
+  association _CertificateState { create; }
+}
+
+define behavior for ZI_CertificateState //alias <alias_name>
+persistent table ZBCA_CERTI_STATE
+lock dependent by _Certificate
+authorization dependent by _Certificate
+//etag master <field_name>
+{
+  update;
+  delete;
+  field ( readonly ) CertUUID;
+  association _Certificate;
+}
