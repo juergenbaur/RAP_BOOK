@@ -1,0 +1,5 @@
+@EndUserText.label: 'Service Definition for managed service'
+define service ZUI_Certificate_U {
+  expose ZC_Certificate;
+  expose ZC_CertificateState;
+}
