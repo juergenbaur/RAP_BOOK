@@ -61,6 +61,19 @@ annotate view ZC_Certificate with
     position: 30 }  ],
     selectionField: [ { position: 30 } ] }
   Version;
+// <<<Test juergen
+  @UI: {  lineItem:       [ {
+      position: 20,
+      criticality: 'Criticality',
+      label: 'StatusIntern' } ],
+      fieldGroup: [ {
+      qualifier: 'Kopfdaten',
+      position: 20,
+      label: 'Status',
+      criticality: 'Criticality' }  ],
+      selectionField: [ { position: 20 } ] }
+    CertificationStatus;
+// >>>Test juergen
 
   @UI: {  lineItem:       [ {
       position: 40,

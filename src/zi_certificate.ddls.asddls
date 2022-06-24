@@ -11,7 +11,7 @@ define root view entity ZI_Certificate
   as select from zbca_certificate as Certificate
   composition [0..*] of ZI_CertificateState as _CertificateState
   //  association [0..1] to I_MaterialText      as _MaterialText on  $projection.Material = _MaterialText.Material
-  association [0..1] to ZI_Status_VH        as _StatusText on $projection.CertificationStatus = _StatusText.value_low
+  association [0..1] to ZI_Status_VH        as _StatusText on $projection.CertificationStatus = _StatusText.Value
 
 {
   key cert_uuid             as CertUUID,
@@ -19,7 +19,7 @@ define root view entity ZI_Certificate
       matnr                 as Material,
       version               as Version,
       cert_status           as CertificationStatus,
-      _StatusText.text      as StatusText,
+      _StatusText.Text      as StatusText,
       cert_ce               as CertificateCe,
       cert_gs               as CertificateGs,
       cert_fcc              as CertificateFcc,

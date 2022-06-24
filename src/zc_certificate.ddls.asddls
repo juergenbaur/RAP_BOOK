@@ -20,7 +20,12 @@ define root view entity ZC_Certificate as projection on ZI_Certificate {
                           'ABAP:ZCL_CERTI_SERVICE'
     virtual MaterialText: abap.char( 150 ),         //Seite 369
     Version,
+
+    @Search.defaultSearchElement: true
+    @Consumption.valueHelpDefinition: [{entity: {name: 'ZI_Status_VH', element: 'Value'} }]   
     CertificationStatus,
+    @Search.defaultSearchElement: true
+    @Consumption.valueHelpDefinition: [{entity: {name: 'ZI_Status_VH', element: 'Text'} }]
     StatusText,
     CertificateCe,
     CertificateGs,

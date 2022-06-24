@@ -19,6 +19,13 @@ etag master LocalLastChangedAt
   field ( numbering : managed, readonly ) CertUUID;
   //  field ( readonly ) MaterialText;
   field ( mandatory ) Material;
+  determination setInitialValues on modify { create; }
+  validation checkMaterial on save { field Material; create; update; }
+
+  action ( features : instance ) newVersion result [1] $self;
+  action ( features : instance ) releaseVersion result [1] $self;
+  action ( features : instance ) archiveVersion result [1] $self;
+
   mapping for zbca_certificate
   {
     Material = matnr;
@@ -31,7 +38,9 @@ etag master LocalLastChangedAt
     CertificateTuev = cert_tuev;
     LocalLastChangedAt = local_last_changed_at;
   }
+
 }
+
 
 define behavior for ZI_CertificateState alias CertificateState
 persistent table zbca_certi_state
