@@ -20,7 +20,7 @@ etag master LocalLastChangedAt
   //  field ( readonly ) MaterialText;
   field ( mandatory ) Material;
   determination setInitialValues on modify { create; }
-  validation checkMaterial on save { field Material; create; update; }
+  //  validation checkMaterial on save { field Material; create; update; }
 
   action ( features : instance ) newVersion result [1] $self;
   action ( features : instance ) releaseVersion result [1] $self;
@@ -28,6 +28,7 @@ etag master LocalLastChangedAt
 
   mapping for zbca_certificate
   {
+    CertUUID = cert_uuid;
     Material = matnr;
     Version = version;
     CertificationStatus = cert_status;

@@ -22,8 +22,7 @@ CLASS lhc_Certificate DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS releaseVersion FOR MODIFY
       IMPORTING keys FOR ACTION Certificate~releaseVersion RESULT result.
 
-    METHODS checkMaterial FOR VALIDATE ON SAVE
-      IMPORTING keys FOR Certificate~checkMaterial.
+
 
 
 ENDCLASS.
@@ -69,9 +68,8 @@ CLASS lhc_Certificate IMPLEMENTATION.
     ENDIF.
     LOOP AT certificates INTO DATA(ls_certificate).
       ls_CertificateState-%key = ls_certificate-%key.
-      ls_CertificateState-CertUUID =
-      ls_certificatestatevalue-CertUUID =
-      ls_certificate-CertUUID.
+      ls_CertificateState-CertUUID = ls_certificate-CertUUID.
+      ls_certificatestatevalue-CertUUID  = ls_certificate-CertUUID.
       ls_certificatestatevalue-Status = '01'.
       CLEAR ls_certificatestatevalue-StatusOld.
       ls_certificatestatevalue-Version = '01'.
@@ -111,7 +109,6 @@ CLASS lhc_Certificate IMPLEMENTATION.
   METHOD releaseVersion.
   ENDMETHOD.
 
-  METHOD checkMaterial.
-  ENDMETHOD.
+
 
 ENDCLASS.

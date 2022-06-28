@@ -9,7 +9,7 @@
 }
 define root view entity ZI_Certificate
   as select from zbca_certificate as Certificate
-  composition [0..*] of ZI_CertificateState as _CertificateState
+  composition [0..*] of ZI_CertificateState as _CertificateState 
   //  association [0..1] to I_MaterialText      as _MaterialText on  $projection.Material = _MaterialText.Material
   association [0..1] to ZI_Status_VH        as _StatusText on $projection.CertificationStatus = _StatusText.Value
 
