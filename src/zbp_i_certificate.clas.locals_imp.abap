@@ -21,6 +21,8 @@ CLASS lhc_Certificate DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
     METHODS releaseVersion FOR MODIFY
       IMPORTING keys FOR ACTION Certificate~releaseVersion RESULT result.
+    METHODS checkMaterial FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Certificate~checkMaterial.
 
 
 
@@ -110,5 +112,32 @@ CLASS lhc_Certificate IMPLEMENTATION.
   ENDMETHOD.
 
 
+
+  METHOD checkMaterial.
+
+    READ ENTITIES OF zi_certificate IN LOCAL MODE
+    ENTITY certificate
+    ALL FIELDS WITH CORRESPONDING #( keys )
+    RESULT DATA(certificates).
+    IF certificates IS NOT INITIAL.
+      LOOP AT certificates INTO DATA(certificate).
+
+        IF strlen( certificate-Material ) > 4.
+          APPEND VALUE #( %tky = certificate-%tky )
+                    TO failed-certificate.
+
+          APPEND VALUE #( %tky        = certificate-%tky
+                          %state_area = 'MATERIAL_UNKNOWN'
+                          %msg        = NEW zcx_certificate(
+                          severity = if_abap_behv_message=>severity-error
+                          textid   = zcx_certificate=>material_unknown
+                          material = certificate-material )
+                        )
+            TO reported-certificate.
+        ENDIF.
+
+      ENDLOOP.
+    ENDIF.
+  ENDMETHOD.
 
 ENDCLASS.
