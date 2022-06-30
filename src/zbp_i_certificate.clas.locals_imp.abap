@@ -103,12 +103,214 @@ CLASS lhc_Certificate IMPLEMENTATION.
 
 
   METHOD archiveVersion.
+      DATA lt_CertificateState TYPE TABLE FOR CREATE zi_certificate\_CertificateState.
+    DATA ls_CertificateState LIKE LINE OF lt_CertificateState.
+    DATA ls_CertificateStateValue LIKE LINE OF ls_certificatestate-%target.
+    DATA lv_status_old TYPE zbc_status.
+
+    READ ENTITIES OF zi_certificate IN LOCAL MODE
+    ENTITY certificate
+    ALL FIELDS WITH CORRESPONDING #( keys )
+    RESULT DATA(certificates).
+
+    LOOP AT certificates INTO DATA(ls_Certificate).
+      ls_Certificate-Version = ls_Certificate-Version + 1.
+      lv_status_old = ls_Certificate-CertificationStatus.
+      ls_Certificate-CertificationStatus = '03'. " inactive
+    ENDLOOP.
+
+    " Set the new overall status
+    MODIFY ENTITIES OF zi_certificate IN LOCAL MODE
+      ENTITY Certificate
+         UPDATE
+           FIELDS ( Version CertificationStatus )
+           WITH VALUE #( FOR key IN keys
+                           ( %tky    = key-%tky
+                             Version = ls_Certificate-Version
+                             CertificationStatus = ls_Certificate-CertificationStatus ) )
+      FAILED failed
+      REPORTED reported.
+
+*    " Fill the response table
+    READ ENTITIES OF zi_certificate IN LOCAL MODE
+      ENTITY certificate
+        ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT certificates.
+
+    result = VALUE #( FOR certificate IN certificates
+                        ( %tky   = certificate-%tky
+                          %param = certificate
+                          ) ).
+
+* Fill Certificate State
+    LOOP AT certificates INTO ls_certificate.
+
+      ls_CertificateState-%key = ls_certificate-%key.
+      ls_CertificateState-CertUUID = ls_certificatestatevalue-CertUUID = ls_certificate-CertUUID.
+
+      ls_certificatestatevalue-Status = ls_certificate-CertificationStatus.
+      ls_certificatestatevalue-StatusOld = lv_status_old.
+      ls_certificatestatevalue-Version = ls_certificate-Version.
+      ls_certificatestatevalue-%control-CertUUID = if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-Status = if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-StatusOld = if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-Version =  if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-LastChangedAt =  if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-LastChangedBy =  if_abap_behv=>mk-on.
+      APPEND ls_certificatestatevalue TO ls_certificatestate-%target.
+
+      APPEND ls_certificatestate TO lt_certificatestate.
+
+      MODIFY ENTITIES OF zi_certificate IN LOCAL MODE
+      ENTITY certificate
+        CREATE BY \_CertificateState
+        FROM lt_CertificateState
+            REPORTED DATA(ls_return_ass)
+            MAPPED DATA(ls_mapped_ass)
+            FAILED  DATA(ls_failed_ass).
+
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD newVersion.
+
+    DATA lt_CertificateState TYPE TABLE FOR CREATE zi_certificate\_CertificateState.
+    DATA ls_CertificateState LIKE LINE OF lt_CertificateState.
+    DATA ls_CertificateStateValue LIKE LINE OF ls_certificatestate-%target.
+    DATA lv_status_old TYPE zbc_status.
+
+    READ ENTITIES OF zi_certificate IN LOCAL MODE
+    ENTITY certificate
+    ALL FIELDS WITH CORRESPONDING #( keys )
+    RESULT DATA(certificates).
+
+    LOOP AT certificates INTO DATA(ls_Certificate).
+      ls_Certificate-Version = ls_Certificate-Version + 1.
+      lv_status_old = ls_Certificate-CertificationStatus.
+      ls_Certificate-CertificationStatus = '01'. " neu
+    ENDLOOP.
+
+    " Set the new overall status
+    MODIFY ENTITIES OF zi_certificate IN LOCAL MODE
+      ENTITY Certificate
+         UPDATE
+           FIELDS ( Version CertificationStatus )
+           WITH VALUE #( FOR key IN keys
+                           ( %tky    = key-%tky
+                             Version = ls_Certificate-Version
+                             CertificationStatus = ls_Certificate-CertificationStatus ) )
+      FAILED failed
+      REPORTED reported.
+
+*    " Fill the response table
+    READ ENTITIES OF zi_certificate IN LOCAL MODE
+      ENTITY certificate
+        ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT certificates.
+
+    result = VALUE #( FOR certificate IN certificates
+                        ( %tky   = certificate-%tky
+                          %param = certificate
+                          ) ).
+
+* Fill Certificate State
+    LOOP AT certificates INTO ls_certificate.
+
+      ls_CertificateState-%key = ls_certificate-%key.
+      ls_CertificateState-CertUUID = ls_certificatestatevalue-CertUUID = ls_certificate-CertUUID.
+
+      ls_certificatestatevalue-Status = ls_certificate-CertificationStatus.
+      ls_certificatestatevalue-StatusOld = lv_status_old.
+      ls_certificatestatevalue-Version = ls_certificate-Version.
+      ls_certificatestatevalue-%control-CertUUID = if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-Status = if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-StatusOld = if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-Version =  if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-LastChangedAt =  if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-LastChangedBy =  if_abap_behv=>mk-on.
+      APPEND ls_certificatestatevalue TO ls_certificatestate-%target.
+
+      APPEND ls_certificatestate TO lt_certificatestate.
+
+      MODIFY ENTITIES OF zi_certificate IN LOCAL MODE
+      ENTITY certificate
+        CREATE BY \_CertificateState
+        FROM lt_CertificateState
+            REPORTED DATA(ls_return_ass)
+            MAPPED DATA(ls_mapped_ass)
+            FAILED  DATA(ls_failed_ass).
+
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD releaseVersion.
+      DATA lt_CertificateState TYPE TABLE FOR CREATE zi_certificate\_CertificateState.
+    DATA ls_CertificateState LIKE LINE OF lt_CertificateState.
+    DATA ls_CertificateStateValue LIKE LINE OF ls_certificatestate-%target.
+    DATA lv_status_old TYPE zbc_status.
+
+    READ ENTITIES OF zi_certificate IN LOCAL MODE
+    ENTITY certificate
+    ALL FIELDS WITH CORRESPONDING #( keys )
+    RESULT DATA(certificates).
+
+    LOOP AT certificates INTO DATA(ls_Certificate).
+      ls_Certificate-Version = ls_Certificate-Version + 1.
+      lv_status_old = ls_Certificate-CertificationStatus.
+      ls_Certificate-CertificationStatus = '02'. " active
+    ENDLOOP.
+
+    " Set the new overall status
+    MODIFY ENTITIES OF zi_certificate IN LOCAL MODE
+      ENTITY Certificate
+         UPDATE
+           FIELDS ( Version CertificationStatus )
+           WITH VALUE #( FOR key IN keys
+                           ( %tky    = key-%tky
+                             Version = ls_Certificate-Version
+                             CertificationStatus = ls_Certificate-CertificationStatus ) )
+      FAILED failed
+      REPORTED reported.
+
+*    " Fill the response table
+    READ ENTITIES OF zi_certificate IN LOCAL MODE
+      ENTITY certificate
+        ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT certificates.
+
+    result = VALUE #( FOR certificate IN certificates
+                        ( %tky   = certificate-%tky
+                          %param = certificate
+                          ) ).
+
+* Fill Certificate State
+    LOOP AT certificates INTO ls_certificate.
+
+      ls_CertificateState-%key = ls_certificate-%key.
+      ls_CertificateState-CertUUID = ls_certificatestatevalue-CertUUID = ls_certificate-CertUUID.
+
+      ls_certificatestatevalue-Status = ls_certificate-CertificationStatus.
+      ls_certificatestatevalue-StatusOld = lv_status_old.
+      ls_certificatestatevalue-Version = ls_certificate-Version.
+      ls_certificatestatevalue-%control-CertUUID = if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-Status = if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-StatusOld = if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-Version =  if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-LastChangedAt =  if_abap_behv=>mk-on.
+      ls_certificatestatevalue-%control-LastChangedBy =  if_abap_behv=>mk-on.
+      APPEND ls_certificatestatevalue TO ls_certificatestate-%target.
+
+      APPEND ls_certificatestate TO lt_certificatestate.
+
+      MODIFY ENTITIES OF zi_certificate IN LOCAL MODE
+      ENTITY certificate
+        CREATE BY \_CertificateState
+        FROM lt_CertificateState
+            REPORTED DATA(ls_return_ass)
+            MAPPED DATA(ls_mapped_ass)
+            FAILED  DATA(ls_failed_ass).
+
+    ENDLOOP.
   ENDMETHOD.
 
 

@@ -39,10 +39,15 @@ annotate view ZC_Certificate with
         position: 30,
         targetElement: '_CertificateState'
   }]
+  
+  @UI.lineItem: [{ position: 10 }]
+  @UI.lineItem: [
+{ type: #FOR_ACTION, dataAction: 'newVersion', label: 'newVersion' },
+{ type: #FOR_ACTION, dataAction: 'releaseVersion', label: 'releaseVersion' },
+{ type: #FOR_ACTION, dataAction: 'archiveVersion', label: 'archiveVersion' }]
 
   @UI.hidden: true
   CertUUID;
-
   @UI: { lineItem: [{ 
   position: 10,
   label: 'Material' } ], 
